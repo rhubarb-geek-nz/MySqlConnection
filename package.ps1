@@ -76,4 +76,8 @@ foreach ($Filter in "MySql*")
 }
 "@ | Set-Content -Path "$ModuleName/$ModuleName.psd1"
 
+$content = [System.IO.File]::ReadAllText("LICENSE")
+
+$content.Replace("`u{000D}`u{000A}","`u{000A}") | Out-File "$ModuleName/LICENSE" -Encoding Ascii -NoNewLine
+
 Compress-Archive -Path "$ModuleName" -DestinationPath "$ZipName"

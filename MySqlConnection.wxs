@@ -26,6 +26,9 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="ProductComponents">
+      <Component Id="CLicense" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
+        <File Id="FLicense" KeyPath="yes" Source="$(env.SOURCEDIR)\LICENSE" />
+      </Component>
       <Component Id="CMySqlConnectionDll" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
         <File Id="FMySqlConnectionDll" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.dll" />
       </Component>
