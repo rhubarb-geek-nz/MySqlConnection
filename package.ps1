@@ -50,7 +50,10 @@ $null = New-Item -Path "$ModuleName" -ItemType Directory
 foreach ($Filter in "MySql*")
 {
 	Get-ChildItem -Path "$BINDIR" -Filter $Filter | Foreach-Object {
-		Copy-Item -Path $_.FullName -Destination "$ModuleName"
+		if ((-not($_.Name.EndsWith('.pdb'))) -and (-not($_.Name.EndsWith('.deps.json'))))
+		{
+			Copy-Item -Path $_.FullName -Destination "$ModuleName"
+		}
 	}
 }
 

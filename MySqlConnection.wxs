@@ -26,14 +26,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="ProductComponents">
-      <Component Id="CMySqlConnectionDepsJson" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
-        <File Id="FMySqlConnectionDepsJson" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.deps.json" />
-      </Component>
       <Component Id="CMySqlConnectionDll" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
         <File Id="FMySqlConnectionDll" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.dll" />
-      </Component>
-      <Component Id="CMySqlConnectionPdb" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
-        <File Id="FMySqlConnectionPdb" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.pdb" />
       </Component>
       <Component Id="CMySqlConnectionPsd1" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
         <File Id="FMySqlConnectionPsd1" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.psd1" />

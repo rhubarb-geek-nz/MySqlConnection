@@ -81,8 +81,6 @@ PowerShell Cmdlet for connection to MySql databases
 %dir %attr(555,root,root) /$ModulesPath/$ModuleName
 %attr(444,root,root)      /$ModulesPath/$ModuleName/$ModuleName.dll
 %attr(444,root,root)      /$ModulesPath/$ModuleName/$ModuleName.psd1
-%attr(444,root,root)      /$ModulesPath/$ModuleName/$ModuleName.pdb
-%attr(444,root,root)      /$ModulesPath/$ModuleName/$ModuleName.deps.json
 %attr(444,root,root)      /$ModulesPath/$ModuleName/MySqlConnector.dll
 
 "@ | Set-Content "rpm.spec"
