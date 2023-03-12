@@ -99,7 +99,7 @@ PowerShell Cmdlet for connection to MySql databases
 }
 finally
 {
-	foreach ($Name in "root", "rpms")
+	foreach ($Name in "root", "rpms", "rpm.spec")
 	{
 		if (Test-Path $Name)
 		{
