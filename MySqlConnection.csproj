@@ -12,10 +12,4 @@
     <PackageReference Include="MySqlConnector" Version="2.2.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="MySqlConnection.psd1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

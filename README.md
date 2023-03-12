@@ -15,3 +15,11 @@ VERSION()
 8.0.32
 
 ```
+The following scripts can be used to make formal packages for specific RID.
+
+| Script | RID | Installation Directory |
+| ------ | --- | ---------------------- |
+| makemsi.ps1 | win | c:\Program Files\PowerShell\Modules\MySqlConnection |
+| makeosx.ps1 | osx | /usr/local/share/powershell/Modules/MySqlConnection |
+| makedeb.ps1 | linux | /opt/microsoft/powershell/7/Modules/MySqlConnection |
+| makerpm.ps1 | linux | /opt/microsoft/powershell/7/Modules/MySqlConnection |

@@ -21,13 +21,16 @@
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 $BINDIR = "bin/Release/netstandard2.0/publish"
+$Version = "2.2.5"
+$ModuleName = "MySqlConnection"
+$ZipName = "$ModuleName-$Version.zip"
 
 trap
 {
 	throw $PSItem
 }
 
-foreach ($Name in "obj", "bin", "MySqlConnection", "MySqlConnection.zip")
+foreach ($Name in "obj", "bin", "$ModuleName", "$ZipName")
 {
 	if (Test-Path "$Name")
 	{
@@ -35,20 +38,39 @@ foreach ($Name in "obj", "bin", "MySqlConnection", "MySqlConnection.zip")
 	} 
 }
 
-dotnet publish MySqlConnection.csproj --configuration Release
+dotnet publish $ModuleName.csproj --configuration Release
 
 If ( $LastExitCode -ne 0 )
 {
 	Exit $LastExitCode
 }
 
-$null = New-Item -Path "MySqlConnection" -ItemType Directory
+$null = New-Item -Path "$ModuleName" -ItemType Directory
 
 foreach ($Filter in "MySql*")
 {
 	Get-ChildItem -Path "$BINDIR" -Filter $Filter | Foreach-Object {
-		Copy-Item -Path $_.FullName -Destination "MySqlConnection"
+		Copy-Item -Path $_.FullName -Destination "$ModuleName"
 	}
 }
 
-Compress-Archive -Path "MySqlConnection" -DestinationPath "MySqlConnection.zip"
+@"
+@{
+	RootModule = '$ModuleName.dll'
+	ModuleVersion = '$Version'
+	GUID = '204158b2-4c7b-4282-b326-33f0876c500d'
+	Author = 'Roger Brown'
+	CompanyName = 'rhubarb-geek-nz'
+	Copyright = '(c) Roger Brown. All rights reserved.'
+	FunctionsToExport = @()
+	CmdletsToExport = @('New-$ModuleName')
+	VariablesToExport = '*'
+	AliasesToExport = @()
+	PrivateData = @{
+		PSData = @{
+		}
+	}
+}
+"@ | Set-Content -Path "$ModuleName/$ModuleName.psd1"
+
+Compress-Archive -Path "$ModuleName" -DestinationPath "$ZipName"

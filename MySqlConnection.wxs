@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="MySqlConnection" Language="1033" Version="$(env.MYSQLVERS)" Manufacturer="rhubarb-geek-nz" UpgradeCode="$(env.MYSQLUPGRADECODE)">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="$(env.MYSQLPLATFORM)" Description="MySqlConnection $(env.MYSQLVERS)" Comments="PowerShell PostgreSQL Cmdlet" />
+    <MediaTemplate EmbedCab="yes" />
+    <Feature Id="ProductFeature" Title="setup" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+    <Upgrade Id="{$(env.MYSQLUPGRADECODE)}">
+      <UpgradeVersion Maximum="$(env.MYSQLVERS)" Property="OLDPRODUCTFOUND" OnlyDetect="no" IncludeMinimum="yes" IncludeMaximum="no" />
+    </Upgrade>
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallInitialize" />
+    </InstallExecuteSequence>
+  </Product>
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="$(env.MYSQLPROGRAMFILES)">
+        <Directory Id="INSTALLDIR" Name="PowerShell">
+          <Directory Id="INSTALLDIR1" Name="Modules">
+            <Directory Id="INSTALLDIR2" Name="MySqlConnection" />
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="ProductComponents">
+      <Component Id="CMySqlConnectionDepsJson" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
+        <File Id="FMySqlConnectionDepsJson" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.deps.json" />
+      </Component>
+      <Component Id="CMySqlConnectionDll" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
+        <File Id="FMySqlConnectionDll" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.dll" />
+      </Component>
+      <Component Id="CMySqlConnectionPdb" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
+        <File Id="FMySqlConnectionPdb" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.pdb" />
+      </Component>
+      <Component Id="CMySqlConnectionPsd1" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
+        <File Id="FMySqlConnectionPsd1" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnection.psd1" />
+      </Component>
+      <Component Id="CMySqlConnectorDll" Guid="*" Directory="INSTALLDIR2" Win64="$(env.MYSQLISWIN64)">
+        <File Id="FMySqlConnectorDll" KeyPath="yes" Source="$(env.SOURCEDIR)\MySqlConnector.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
