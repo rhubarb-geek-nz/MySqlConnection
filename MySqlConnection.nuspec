@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>rhubarb-geek-nz.MySqlConnection</id>
+    <version>2.2.5</version>
+    <authors>rhubarb-geek-nz</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">LGPL-3.0-or-later</license>
+    <!-- <icon>icon.png</icon> -->
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/rhubarb-geek-nz/MySqlConnection</projectUrl>
+    <description>MySql Connection Tool</description>
+    <releaseNotes>NuGet package for MySqlConnection</releaseNotes>
+    <copyright>(c) Roger Brown. All rights reserved.</copyright>
+    <tags>New-MySqlConnection</tags>
+  </metadata>
+  <files>
+     <file src="rhubarb-geek-nz.MySqlConnection/README.md" target="" />
+     <file src="rhubarb-geek-nz.MySqlConnection/*.dll" target="" />
+     <file src="rhubarb-geek-nz.MySqlConnection/*.psd1" target="" />
+  </files>
+</package>

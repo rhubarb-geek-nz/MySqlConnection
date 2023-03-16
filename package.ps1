@@ -21,16 +21,20 @@
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 $BINDIR = "bin/Release/netstandard2.0/publish"
-$Version = "2.2.5"
 $ModuleName = "MySqlConnection"
-$ZipName = "$ModuleName-$Version.zip"
 
 trap
 {
 	throw $PSItem
 }
 
-foreach ($Name in "obj", "bin", "$ModuleName", "$ZipName")
+$xmlDoc = [System.Xml.XmlDocument](Get-Content "$ModuleName.nuspec")
+
+$Version = $xmlDoc.SelectSingleNode("/package/metadata/version").FirstChild.Value
+$CompanyName = $xmlDoc.SelectSingleNode("/package/metadata/authors").FirstChild.Value
+$ModuleId = $xmlDoc.SelectSingleNode("/package/metadata/id").FirstChild.Value
+
+foreach ($Name in "obj", "bin", "$ModuleId")
 {
 	if (Test-Path "$Name")
 	{
@@ -45,14 +49,14 @@ If ( $LastExitCode -ne 0 )
 	Exit $LastExitCode
 }
 
-$null = New-Item -Path "$ModuleName" -ItemType Directory
+$null = New-Item -Path "$ModuleId" -ItemType Directory
 
 foreach ($Filter in "MySql*")
 {
 	Get-ChildItem -Path "$BINDIR" -Filter $Filter | Foreach-Object {
 		if ((-not($_.Name.EndsWith('.pdb'))) -and (-not($_.Name.EndsWith('.deps.json'))))
 		{
-			Copy-Item -Path $_.FullName -Destination "$ModuleName"
+			Copy-Item -Path $_.FullName -Destination "$ModuleId"
 		}
 	}
 }
@@ -74,10 +78,13 @@ foreach ($Filter in "MySql*")
 		}
 	}
 }
-"@ | Set-Content -Path "$ModuleName/$ModuleName.psd1"
+"@ | Set-Content -Path "$ModuleId/$ModuleId.psd1"
 
-$content = [System.IO.File]::ReadAllText("LICENSE")
+(Get-Content "./README.md")[0..2] | Set-Content -Path "$ModuleId/README.md"
 
-$content.Replace("`u{000D}`u{000A}","`u{000A}") | Out-File "$ModuleName/LICENSE" -Encoding Ascii -NoNewLine
+nuget pack "$ModuleName.nuspec"
 
-Compress-Archive -Path "$ModuleName" -DestinationPath "$ZipName"
+If ( $LastExitCode -ne 0 )
+{
+	Exit $LastExitCode
+}
