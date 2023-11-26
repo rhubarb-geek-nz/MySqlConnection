@@ -3,13 +3,38 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>MySqlConnection</AssemblyName>
+    <Copyright>Copyright &#169; 2023 Roger Brown</Copyright>
+    <Version>2.2.5</Version>
+    <AssemblyTitle>PowerShell Cmdlet for MySqlConnection</AssemblyTitle>
+    <Product>MySqlConnection for PowerShell</Product>
+    <Company>rhubarb-geek-nz</Company>
+    <PackageId>rhubarb-geek-nz.MySqlConnection</PackageId>
+    <Title>MySqlConnection for PowerShell</Title>
+    <Description>MySQL Connection Tool</Description>
+    <Authors>Roger Brown</Authors>
+    <PackageProjectUrl>https://github.com/rhubarb-geek-nz/MySqlConnection</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rhubarb-geek-nz/MySqlConnection.git</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>MySqlConnection</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MySqlConnector" Version="2.2.5" />
+    <PackageReference Include="MySqlConnector" Version="$(Version)" />
   </ItemGroup>
+
+  <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
+    <ItemGroup>
+      <FilesToDelete Include="$(PublishDir)System.*.dll" />
+      <FilesToDelete Include="$(PublishDir)Microsoft.*.dll" />
+      <FilesToDelete Include="$(PublishDir)$(AssemblyName).deps.json" />
+      <FilesToDelete Include="$(PublishDir)$(AssemblyName).pdb" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+    <Exec Command="pwsh ./package.ps1 $(AssemblyName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
+  </Target>
 
 </Project>

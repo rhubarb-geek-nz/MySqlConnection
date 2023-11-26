@@ -2,9 +2,13 @@
 
 Very simple `PowerShell` module for creating a connection to a `MySql` database.
 
-Build using the `package.ps1` script.
+Build using
 
-Install by copying into a directory on the [PSModulePath](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_psmodulepath)
+```
+$ dotnet public MySqlConnection.csproj --configuration Release
+```
+
+Install by copying the publish into a directory on the [PSModulePath](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_psmodulepath)
 
 Create a test database.
 
