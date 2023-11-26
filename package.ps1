@@ -18,79 +18,65 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
-param(
-	$ModuleName = "MySqlConnection",
-	$CompanyName = "rhubarb-geek-nz"
-)
+param($ProjectName,$IntermediateOutputPath,$OutDir,$PublishDir)
 
-$ErrorActionPreference = "Stop"
-$ProgressPreference = "SilentlyContinue"
-$BINDIR = "bin/Release/netstandard2.0/publish"
+$ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 $compatiblePSEdition = 'Core'
 $PowerShellVersion = '7.2'
+
+function Get-SingleNodeValue([System.Xml.XmlDocument]$doc,[string]$path)
+{
+    return $doc.SelectSingleNode($path).FirstChild.Value
+}
 
 trap
 {
 	throw $PSItem
 }
 
-$xmlDoc = [System.Xml.XmlDocument](Get-Content "$ModuleName.nuspec")
+$xmlDoc = [System.Xml.XmlDocument](Get-Content "$ProjectName.csproj")
 
-$Version = $xmlDoc.SelectSingleNode("/package/metadata/version").FirstChild.Value
-$ModuleId = $xmlDoc.SelectSingleNode("/package/metadata/id").FirstChild.Value
-$ProjectUri = $xmlDoc.SelectSingleNode("/package/metadata/projectUrl").FirstChild.Value
-$Description = $xmlDoc.SelectSingleNode("/package/metadata/description").FirstChild.Value
-$Author = $xmlDoc.SelectSingleNode("/package/metadata/authors").FirstChild.Value
-$Copyright = $xmlDoc.SelectSingleNode("/package/metadata/copyright").FirstChild.Value
+$ModuleId = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/PackageId'
+$Version = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Version'
+$ProjectUri = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/PackageProjectUrl'
+$Description = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Description'
+$Author = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Authors'
+$Copyright = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Copyright'
+$AssemblyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/AssemblyName'
+$CompanyName = Get-SingleNodeValue $xmlDoc '/Project/PropertyGroup/Company'
 
-foreach ($Name in "obj", "bin", "$ModuleId")
-{
-	if (Test-Path "$Name")
-	{
-		Remove-Item "$Name" -Force -Recurse
-	} 
-}
-
-dotnet publish $ModuleName.csproj --configuration Release
-
-If ( $LastExitCode -ne 0 )
-{
-	Exit $LastExitCode
-}
-
-$null = New-Item -Path "$ModuleId" -ItemType Directory
-
-foreach ($Filter in "MySql*")
-{
-	Get-ChildItem -Path "$BINDIR" -Filter $Filter | Foreach-Object {
-		if ((-not($_.Name.EndsWith('.pdb'))) -and (-not($_.Name.EndsWith('.deps.json'))))
-		{
-			Copy-Item -Path $_.FullName -Destination "$ModuleId"
-		}
-	}
-}
-
-@"
-@{
-	RootModule = '$ModuleName.dll'
-	ModuleVersion = '$Version'
-	GUID = '204158b2-4c7b-4282-b326-33f0876c500d'
-	Author = '$Author'
-	CompanyName = '$CompanyName'
-	Copyright = '$Copyright'
-	PowerShellVersion = "$PowerShellVersion"
-	CompatiblePSEditions = @('$compatiblePSEdition')
-	Description = '$Description'
+$moduleSettings = @{
+	Path = "$IntermediateOutputPath$ModuleId.psd1"
+	RootModule = "$AssemblyName.dll"
+	ModuleVersion = $Version
+	Guid = '204158b2-4c7b-4282-b326-33f0876c500d'
+	Author = $Author
+	CompanyName = $CompanyName
+	Copyright = $Copyright
+	Description = $Description
+	PowerShellVersion = $PowerShellVersion
+	CompatiblePSEditions = @($compatiblePSEdition)
 	FunctionsToExport = @()
-	CmdletsToExport = @('New-$ModuleName')
+	CmdletsToExport = @("New-$ProjectName")
 	VariablesToExport = '*'
 	AliasesToExport = @()
-	PrivateData = @{
-		PSData = @{
-			ProjectUri = '$ProjectUri'
+	ProjectUri = $ProjectUri
+}
+
+New-ModuleManifest @moduleSettings
+
+Import-PowerShellDataFile -LiteralPath "$IntermediateOutputPath$ModuleId.psd1" | Export-PowerShellDataFile | Set-Content -LiteralPath "$PublishDir$ModuleId.psd1"
+
+(Get-Content "./README.md")[0..2] | Set-Content -Path "$PublishDir/README.md"
+
+If (-not($IsWindows))
+{
+	Get-ChildItem -Path $PublishDir -File | Foreach-Object {
+		chmod -x $_.FullName
+		If ( $LastExitCode -ne 0 )
+		{
+			Exit $LastExitCode
 		}
 	}
 }
-"@ | Set-Content -Path "$ModuleId/$ModuleId.psd1"
-
-(Get-Content "./README.md")[0..2] | Set-Content -Path "$ModuleId/README.md"
