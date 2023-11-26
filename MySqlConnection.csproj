@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>MySqlConnection</AssemblyName>
     <Copyright>Copyright &#169; 2023 Roger Brown</Copyright>
-    <Version>2.2.5</Version>
+    <Version>2.3.1</Version>
     <AssemblyTitle>PowerShell Cmdlet for MySqlConnection</AssemblyTitle>
     <Product>MySqlConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
@@ -29,7 +29,7 @@
   <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
     <ItemGroup>
       <FilesToDelete Include="$(PublishDir)System.*.dll" />
-      <FilesToDelete Include="$(PublishDir)Microsoft.*.dll" />
+      <FilesToDelete Include="$(PublishDir)Microsoft.Bcl.*.dll" />
       <FilesToDelete Include="$(PublishDir)$(AssemblyName).deps.json" />
       <FilesToDelete Include="$(PublishDir)$(AssemblyName).pdb" />
     </ItemGroup>
