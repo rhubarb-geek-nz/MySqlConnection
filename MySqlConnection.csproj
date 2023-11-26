@@ -29,7 +29,6 @@
   <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
     <ItemGroup>
       <FilesToDelete Include="$(PublishDir)System.*.dll" />
-      <FilesToDelete Include="$(PublishDir)Microsoft.Bcl.*.dll" />
       <FilesToDelete Include="$(PublishDir)$(AssemblyName).deps.json" />
       <FilesToDelete Include="$(PublishDir)$(AssemblyName).pdb" />
     </ItemGroup>
