@@ -68,7 +68,7 @@ New-ModuleManifest @moduleSettings
 
 Import-PowerShellDataFile -LiteralPath "$IntermediateOutputPath$ModuleId.psd1" | Export-PowerShellDataFile | Set-Content -LiteralPath "$PublishDir$ModuleId.psd1"
 
-(Get-Content "./README.md")[0..2] | Set-Content -Path "$PublishDir/README.md"
+(Get-Content "../README.md")[0..2] | Set-Content -Path "$PublishDir/README.md"
 
 If (-not($IsWindows))
 {
@@ -78,5 +78,21 @@ If (-not($IsWindows))
 		{
 			Exit $LastExitCode
 		}
+	}
+}
+
+$LibDir = "$($PublishDir)lib"
+
+if ( Test-Path $LibDir )
+{
+	Remove-Item -LiteralPath $LibDir -Recurse
+}
+
+$null = New-Item -Path $PublishDir -Name 'lib' -ItemType 'directory'
+
+Get-ChildItem -LiteralPath $PublishDir -Filter '*.dll' | ForEach-Object {
+	if ( $_.Name -ne  "$AssemblyName.dll" )
+	{
+		Move-Item $_.FullName $LibDir
 	}
 }

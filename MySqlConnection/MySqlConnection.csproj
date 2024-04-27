@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>MySqlConnection</AssemblyName>
-    <Copyright>Copyright &#169; 2023 Roger Brown</Copyright>
-    <Version>2.3.1</Version>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>RhubarbGeekNz.MySqlConnection</AssemblyName>
+    <Copyright>Copyright &#169; 2024 Roger Brown</Copyright>
+    <Version>2.3.7</Version>
     <AssemblyTitle>PowerShell Cmdlet for MySqlConnection</AssemblyTitle>
     <Product>MySqlConnection for PowerShell</Product>
     <Company>rhubarb-geek-nz</Company>
@@ -24,7 +24,10 @@
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MySqlConnector" Version="$(Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Alc\Alc.csproj" />
   </ItemGroup>
 
   <Target Name="Sign" AfterTargets="Compile" Condition=" '$(Configuration)' == 'Release' AND '$(OS)' == 'Windows_NT' ">
@@ -41,14 +44,13 @@
 
   <Target Name="Package" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
     <ItemGroup>
-      <FilesToDelete Include="$(PublishDir)System.*.dll" />
-      <FilesToDelete Include="$(PublishDir)$(AssemblyName).deps.json" />
-      <FilesToDelete Include="$(PublishDir)$(AssemblyName).pdb" />
+      <FilesToDelete Include="$(PublishDir)*.deps.json" />
+      <FilesToDelete Include="$(PublishDir)*.pdb" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
     <Exec Command="dotnet tool restore" />
-    <Exec Command="dotnet pwsh -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
-    <Exec Command="dotnet pwsh -ExecutionPolicy Bypass -File ./package.ps1 $(AssemblyName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
+    <Exec Command="dotnet pwsh -NoProfile -ExecutionPolicy Bypass -c &quot;Set-Variable -Name 'ErrorActionPreference' -Value 'Stop'; if ( -not ( Get-Module -ListAvailable -Name '$(Company).PowerShellDataFile' ) ) { Install-Module -Name '$(Company).PowerShellDataFile' -Repository 'PSGallery' -Force }&quot; " />
+    <Exec Command="dotnet pwsh -NoProfile -ExecutionPolicy Bypass -File ./package.ps1 $(ProjectName) $(IntermediateOutputPath) $(OutDir) $(PublishDir)" />
   </Target>
 
 </Project>
