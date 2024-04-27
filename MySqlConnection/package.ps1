@@ -18,12 +18,21 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 
-param($ProjectName,$IntermediateOutputPath,$OutDir,$PublishDir)
+param($ProjectName,$IntermediateOutputPath,$OutDir,$PublishDir,$TargetFramework)
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $compatiblePSEdition = 'Core'
-$PowerShellVersion = '7.2'
+$PowerShellVersion = '7.0'
+
+switch ( $TargetFramework )
+{
+	'net5.0' { $PowerShellVersion = '7.1' }
+	'net6.0' { $PowerShellVersion = '7.2' }
+	'net7.0' { $PowerShellVersion = '7.3' }
+	'net8.0' { $PowerShellVersion = '7.4' }
+	'net9.0' { $PowerShellVersion = '7.5' }
+}
 
 function Get-SingleNodeValue([System.Xml.XmlDocument]$doc,[string]$path)
 {
