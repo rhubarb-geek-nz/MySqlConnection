@@ -22,6 +22,6 @@ Run the `test.ps1` to confirm it works.
 
 VERSION()
 ---------
-8.3.0
+8.4.0
 
 ```
